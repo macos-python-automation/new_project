@@ -1,0 +1,11 @@
+{
+    "out_path": "",
+    "project_types": ["react", "react_typescript", "nextjs", "nextjs_typescript"],
+    "github": {
+        "username": "",
+        "repo": {
+            "is_private": true
+        },
+        "origin_type": "ssh"
+    }
+}

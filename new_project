@@ -1,0 +1,101 @@
+#! /Users/rahul/Developer/python_projects/new_project/vir_env/bin/python3 
+
+""" This module automates the tedious process of creating a new project & setting
+up Git/GitHub """
+
+import subprocess
+import sys
+import os
+
+from dotenv import load_dotenv
+import github
+
+from github_helpers import (
+    connect_github_with_project,
+    get_repo,
+    initialize_github,
+    does_github_repo_exists,
+)
+from project import (
+    create_project,
+)
+from config_settings import initialize_config
+import project
+from utils import (
+    has_setup_env_variables,
+    has_setup_config_file,
+    validate_yn_inputs,
+    yn_to_bool,
+    bool_to_yn,
+    load_config,
+)
+from utils.main import create_dir
+
+load_dotenv()
+
+CONFIG = load_config()
+
+
+def main():
+    """Starting point of the script"""
+
+    has_setup_env_variables()
+    has_setup_config_file()
+
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "config":
+            initialize_config()
+            sys.exit()
+
+    github_instance = initialize_github()
+
+    subprocess.run("clear", shell=True, check=True)
+    project_type_counter = 1
+    project_name = input("Enter project name ( Eg: my_portfolio ): \n")
+    if not project_name:
+        print("Please provide a project name")
+        sys.exit()
+
+    does_github_repo_exists(github_instance, project_name)
+
+    print(
+        """
+        Select the type of project from the list below (type the value eg: react_typescript):
+    """
+    )
+    for project_type in CONFIG["project_types"]:
+        print(f"{project_type_counter}. {project_type}")
+        project_type_counter += 1
+
+    project_type = input("\nPlease type the full template name: ")
+    if not project_type:
+        print("Invalid project type")
+        sys.exit()
+
+    is_repo_private = (
+        input(
+            f"\nDo you want to create a private repo(y/n) default value is {'y' if CONFIG['github']['repo']['is_private'] else 'n'}: "
+        )
+        or "y"
+        if CONFIG["github"]["repo"]["is_private"]
+        else "n"
+    )
+    if validate_yn_inputs(is_repo_private):
+        pass
+
+    # create_dir(f"{CONFIG['out_path']}/{project_name}")
+    # print(
+    #     f"{'A github repo already exists. Please use another project name' if not get_repo(github_instance, options={'repo_name': project_name}) else 'Project can be created'}"
+    # )
+    create_project(project_name, project_type)
+    connect_github_with_project(
+        github_instance,
+        {
+            "repo_name": project_name,
+            "is_private": True if is_repo_private == "y" else False,
+        },
+    )
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,5 @@
+black
+pylint
+colorama
+pygithub
+python-dotenv
