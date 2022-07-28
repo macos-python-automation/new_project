@@ -1,39 +1,39 @@
-#! /Users/rahul/Developer/python_projects/new_project/vir_env/bin/python3 
+#! /Users/rahul/Developer/python_projects/new_project/vir_env/bin/python3
 
 """ This module automates the tedious process of creating a new project & setting
 up Git/GitHub """
 
 import subprocess
 import sys
-import os
 
 from dotenv import load_dotenv
-import github
+from simple_term_menu import TerminalMenu
 
 from github_helpers import (
     connect_github_with_project,
-    get_repo,
     initialize_github,
     does_github_repo_exists,
 )
 from project import (
     create_project,
 )
-from config_settings import initialize_config
-import project
+from config_settings import initialize_config_file
 from utils import (
     has_setup_env_variables,
+    load_project_templates,
     has_setup_config_file,
     validate_yn_inputs,
-    yn_to_bool,
-    bool_to_yn,
     load_config,
+    bool_to_yn,
+    yn_to_bool,
 )
-from utils.main import create_dir
 
 load_dotenv()
 
 CONFIG = load_config()
+PROJECT_TEMPLATES = load_project_templates(CONFIG["project_types"])
+PROJECT_TEMPLATES.extend(["quit"])
+project_template_menu = TerminalMenu(PROJECT_TEMPLATES)
 
 
 def main():
@@ -44,13 +44,12 @@ def main():
 
     if len(sys.argv) > 1:
         if sys.argv[1] == "config":
-            initialize_config()
+            initialize_config_file()
             sys.exit()
 
     github_instance = initialize_github()
 
     subprocess.run("clear", shell=True, check=True)
-    project_type_counter = 1
     project_name = input("Enter project name ( Eg: my_portfolio ): \n")
     if not project_name:
         print("Please provide a project name")
@@ -60,39 +59,26 @@ def main():
 
     print(
         """
-        Select the type of project from the list below (type the value eg: react_typescript):
-    """
+Select the type of project from the list below (type the value eg: react_typescript):
+"""
     )
-    for project_type in CONFIG["project_types"]:
-        print(f"{project_type_counter}. {project_type}")
-        project_type_counter += 1
 
-    project_type = input("\nPlease type the full template name: ")
-    if not project_type:
-        print("Invalid project type")
+    template = PROJECT_TEMPLATES[project_template_menu.show()]
+    if template == "quit":
         sys.exit()
 
-    is_repo_private = (
-        input(
-            f"\nDo you want to create a private repo(y/n) default value is {'y' if CONFIG['github']['repo']['is_private'] else 'n'}: "
-        )
-        or "y"
-        if CONFIG["github"]["repo"]["is_private"]
-        else "n"
-    )
+    is_repo_private = input(
+        f"\nDo you want to create a private repo(y/n) default value is {'y' if CONFIG['github']['repo']['is_private'] else 'n'}: "
+    ) or bool_to_yn(CONFIG["github"]["repo"]["is_private"])
     if validate_yn_inputs(is_repo_private):
         pass
 
-    # create_dir(f"{CONFIG['out_path']}/{project_name}")
-    # print(
-    #     f"{'A github repo already exists. Please use another project name' if not get_repo(github_instance, options={'repo_name': project_name}) else 'Project can be created'}"
-    # )
-    create_project(project_name, project_type)
+    create_project(project_name, template)
     connect_github_with_project(
         github_instance,
         {
             "repo_name": project_name,
-            "is_private": True if is_repo_private == "y" else False,
+            "is_private": yn_to_bool(is_repo_private),
         },
     )
 

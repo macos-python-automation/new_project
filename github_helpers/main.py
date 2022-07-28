@@ -4,13 +4,16 @@ import os
 import sys
 import subprocess
 
+import colorama
 from github import Github
+from colorama import Fore
 from dotenv import load_dotenv
 
 from utils import load_config, validate_yn_inputs, yn_to_bool
 
 
 load_dotenv()
+colorama.init(autoreset=True)
 CONFIG = load_config()
 GITHUB_ORIGIN_URL = {
     "ssh": "git@github.com:github_username/repo_name.git",
@@ -25,23 +28,20 @@ def initialize_github():
 
 def does_github_repo_exists(github_instance, repo_name):
     """Checks if the repository already exists on Github"""
-    print(f"Checking if a repo with the name {repo_name} already exists or not ")
     github_repo = get_repo(
         github_instance,
         options={"repo_name": f"{CONFIG['github']['username']}/{repo_name}"},
     )
-    print(f"{github_repo}")
 
     if github_repo:
         clone_existing_repo = input(
-            f"A github repo with the name ```{repo_name}``` already exists. Would you like to clone that repo instead (y/n): "
+            f"A github repo with the name {Fore.YELLOW}{repo_name}{Fore.RESET} already exists. Would you like to clone that repo instead? (y/n): "
         )
         if not validate_yn_inputs(clone_existing_repo):
             print("Invalid selection => The only valid inputs are Y or N")
             sys.exit()
         if yn_to_bool(clone_existing_repo):
             os.chdir(CONFIG["out_path"])
-            print(os.getcwd())
             subprocess.run(
                 f"git clone {generate_origin_url(repo_name)}",
                 shell=True,

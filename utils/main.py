@@ -69,9 +69,9 @@ def yn_to_bool(yn_input):
 def bool_to_yn(bool_input):
     """This method takes a Boolean input & returns the Y or N representative"""
     if bool_input:
-        return True
+        return "y"
     elif not bool_input:
-        return False
+        return "n"
     else:
         print("Please provide True/False as input")
         sys.exit()
@@ -91,3 +91,12 @@ def create_dir(dir_path: str) -> None:
     else:
         os.mkdir(dir_path)
         print(f"{Fore.GREEN}A new directory is created at {dir_path}")
+
+
+def load_project_templates(templates):
+    """This method takes a NoneType list & returns a normal list"""
+    template_list = []
+    for template in templates:
+        template_list.append(f"{template}")
+
+    return template_list

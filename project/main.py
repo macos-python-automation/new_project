@@ -4,38 +4,38 @@ import os
 import sys
 import subprocess
 
-from utils import load_config
+from utils import load_config, create_dir
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-def create_project(project_name, project_type="react"):
+def create_project(project_name, template="react"):
     """This method filters through different types of projects & initializes
     the correct project"""
     config = load_config()
 
     def create_frontend_folder():
         """Creates a frontend folder"""
-        os.mkdir(f'{config["out_path"]}/{project_name}')
-        os.mkdir(f'{config["out_path"]}/{project_name}/frontend')
+        create_dir(f'{config["out_path"]}/{project_name}')
+        create_dir(f'{config["out_path"]}/{project_name}/frontend')
         os.chdir(f'{config["out_path"]}/{project_name}/frontend')
 
-    if project_type == "react":
+    if template == "react":
         create_frontend_folder()
         initialize_react_project()
-    elif project_type == "react_typescript":
+    elif template == "react_typescript":
         create_frontend_folder()
         initialize_react_typescript_project()
-    elif project_type == "nextjs":
+    elif template == "nextjs":
         create_frontend_folder()
         initialize_nextjs_project()
-    elif project_type == "nextjs_typescript":
+    elif template == "nextjs_typescript":
         create_frontend_folder()
         initialize_nextjs_typescript_project()
-    elif project_type == "python_script":
-        os.mkdir(f'{config["out_path"]}/{project_name}')
+    elif template == "python_script":
+        create_dir(f'{config["out_path"]}/{project_name}')
         os.chdir(f'{config["out_path"]}/{project_name}')
         initialize_python_script()
     else:

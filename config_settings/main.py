@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def initialize_config(path=os.getenv("CONFIG_PATH")):
+def initialize_config_file(path=os.getenv("CONFIG_PATH")):
     """Initializing the config.json file"""
 
     subprocess.run(

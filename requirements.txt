@@ -3,3 +3,4 @@ pylint
 colorama
 pygithub
 python-dotenv
+simple_term_menu
