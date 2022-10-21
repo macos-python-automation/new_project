@@ -49,10 +49,7 @@ def has_setup_config_file():
 
 def validate_yn_inputs(input_value=""):
     """Validate if the y/n input value is correct or not"""
-    if input_value.lower() == "y" or input_value.lower() == "n":
-        return True
-    else:
-        return False
+    return input_value.lower() == "y" or input_value.lower() == "n"
 
 
 def yn_to_bool(yn_input):
