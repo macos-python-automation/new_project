@@ -6,6 +6,10 @@
         "repo": {
             "is_private": true
         },
-        "origin_type": "ssh"
+        "origin_type": "ssh",
+        "origin_uri": {
+            "ssh": "",
+            "https": ""
+        }
     }
 }

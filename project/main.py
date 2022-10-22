@@ -9,18 +9,23 @@ from utils import load_config, create_dir
 from dotenv import load_dotenv
 
 load_dotenv()
+CONFIG_PATH = load_config()["out_path"]
+
+
+def open_project(project_name):
+    """Opens the project in VScode Editor"""
+    subprocess.run(f"cd {CONFIG_PATH}/{project_name} && code .", shell=True, check=True)
 
 
 def create_project(project_name, template="react"):
     """This method filters through different types of projects & initializes
     the correct project"""
-    config = load_config()
 
     def create_frontend_folder():
         """Creates a frontend folder"""
-        create_dir(f'{config["out_path"]}/{project_name}')
-        create_dir(f'{config["out_path"]}/{project_name}/frontend')
-        os.chdir(f'{config["out_path"]}/{project_name}/frontend')
+        create_dir(f"{CONFIG_PATH}/{project_name}")
+        create_dir(f"{CONFIG_PATH}/{project_name}/frontend")
+        os.chdir(f"{CONFIG_PATH}/{project_name}/frontend")
 
     if template == "react":
         create_frontend_folder()
@@ -35,8 +40,8 @@ def create_project(project_name, template="react"):
         create_frontend_folder()
         initialize_nextjs_typescript_project()
     elif template == "python_script":
-        create_dir(f'{config["out_path"]}/{project_name}')
-        os.chdir(f'{config["out_path"]}/{project_name}')
+        create_dir(f"{CONFIG_PATH}/{project_name}")
+        os.chdir(f"{CONFIG_PATH}/{project_name}")
         initialize_python_script()
     else:
         print("Invalid project type")
