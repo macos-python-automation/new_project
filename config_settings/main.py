@@ -16,3 +16,8 @@ def initialize_config_file(path=os.getenv("CONFIG_PATH")):
         shell=True,
         check=True,
     )
+    subprocess.run(
+        f"cp {path}/.env.example {path}/.env",
+        shell=True,
+        check=True,
+    )
