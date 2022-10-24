@@ -118,7 +118,7 @@ def setup_git(origin_uri):
 
     subprocess.run("git init", shell=True, check=True)
     subprocess.run(f"git remote add origin {origin_uri}", shell=True, check=True)
-    subprocess.run(f"echo 'vir_env' >> .gitignore", shell=True, check=True)
+    subprocess.run(f"echo 'vir_env \n.git\n.env' >> .gitignore", shell=True, check=True)
     subprocess.run("git add .", shell=True, check=True)
     subprocess.run('git commit -m "Initial commit"', shell=True, check=True)
     subprocess.run("git push -u origin main", shell=True, check=True)

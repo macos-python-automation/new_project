@@ -33,17 +33,21 @@ def has_setup_env_variables():
 
     elif not os.path.exists(f"{os.getenv('CONFIG_PATH')}/config.json"):
         print(
-            "Please create & configure the script with `config.json` file at the root directory"
+            f"""Please configure the script with `config.json` file at the root directory.
+
+Run the command {Fore.YELLOW}`new_project config`{Fore.RESET} to create skeleton configuration files (config.json | .env)"""
         )
         sys.exit()
 
 
 def has_setup_config_file():
-    """f"""
-    if not CONFIG["out_path"]:
-        print(
-            "Please configure a path to the folder where all your projects will be created"
-        )
+    """checks if the configuration is setup or not"""
+    if not (
+        os.path.isfile(f"{os.getenv('CONFIG_PATH')}/config.json")
+        or CONFIG["out_path"]
+        or CONFIG["github"]["username"]
+    ):
+        print("Please add configurations to the config.json file")
         sys.exit()
 
 

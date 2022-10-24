@@ -5,6 +5,8 @@ up Git/GitHub """
 
 import subprocess
 import sys
+from colorama import Fore, init
+
 
 from dotenv import load_dotenv
 from simple_term_menu import TerminalMenu
@@ -14,9 +16,7 @@ from github_helpers import (
     initialize_github,
     does_github_repo_exists,
 )
-from project import (
-    create_project,
-)
+from project import create_project, open_project
 from config_settings import initialize_config_file
 from utils import (
     has_setup_env_variables,
@@ -29,6 +29,7 @@ from utils import (
 )
 
 load_dotenv()
+init(autoreset=True)
 
 CONFIG = load_config()
 PROJECT_TEMPLATES = load_project_templates(CONFIG["project_types"])
@@ -50,9 +51,9 @@ def main():
     github_instance = initialize_github()
 
     subprocess.run("clear", shell=True, check=True)
-    project_name = input("Enter project name ( Eg: my_portfolio ): \n")
+    project_name = input("Enter project name ( Eg: my_portfolio ): ")
     if not project_name:
-        print("Please provide a project name")
+        print(f"{Fore.RED}Please provide a project name")
         sys.exit()
 
     does_github_repo_exists(github_instance, project_name)
@@ -81,6 +82,7 @@ Select the type of project from the list below (type the value eg: react_typescr
             "is_private": yn_to_bool(is_repo_private),
         },
     )
+    open_project(project_name)
 
 
 if __name__ == "__main__":
